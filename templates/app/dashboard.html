@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  {% load static %}
+  <link rel="icon" href="{% static 'favicon.ico' %}">
+<title>EatnFit</title>
+
   <meta charset="UTF-8">
-  <title>Dashboard - EatnFit</title>
+
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap 5 -->
@@ -14,19 +18,41 @@
     body { background-color: #000; color: #fff; font-family: 'Poppins', sans-serif; }
     .navbar-custom { background-color: #1e1e1e; }
     .nav-link { color: #ccc !important; }
-    .nav-link:hover { color: white !important; }
-    .nav-link.active { color: white !important; font-weight: bold; }
+    .nav-link:hover { color: #fff !important; }
+    .nav-link.active { color: #fff !important; font-weight: bold; }
+
     .btn-outline-orange { border-color: #fa6e14; color: #fa6e14; }
     .btn-outline-orange:hover { background-color: #fa6e14; color: #fff; }
-    .card-box { background-color: #111; border-radius: 20px; border: 1px solid rgba(250,110,20,0.3);
-      padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.6); transition: all 0.3s; height: 100%; cursor: pointer; }
-    .card-box:hover { transform: scale(1.02); border-color: #fa6e14; }
-    .card-box i { color: #fa6e14; }
+
+    .card-box {
+      background-color: #111;
+      border-radius: 20px;
+      border: 1px solid rgba(250,110,20,0.3);
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      transition: 0.3s;
+      height: 100%;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .card-box:hover { transform: scale(1.03); border-color: #fa6e14; }
+    .card-box i { color: #fa6e14; font-size: 3rem; }
+    .card-text { color: #ccc; margin-top: 10px; font-size: 0.95rem; }
+
     .text-orange { color: #fa6e14; }
-    .summary-box { background-color: #111; border-radius: 15px; padding: 2rem 1rem; margin-top: 60px; border-left: 4px solid #fa6e14; }
-    .summary-item { text-align: center; }
+
+    .summary-box {
+      background-color: #111;
+      border-radius: 15px;
+      padding: 2rem 1rem;
+      margin-top: 60px;
+      border-left: 4px solid #fa6e14;
+    }
+
     .summary-item .value { font-size: 2rem; font-weight: bold; color: #fa6e14; }
     .summary-item .label { color: #aaa; font-size: 0.95rem; }
+
     .goal-form { max-width: 250px; margin: 15px auto; }
     .goal-input { background:#1a1a1a; border:1px solid #fa6e14; color:white; }
   </style>
@@ -39,29 +65,36 @@
     <a class="navbar-brand fw-bold text-white" href="{% url 'index' %}">
       <i class="bi bi-heart-pulse-fill text-orange"></i> <span class="text-orange">Eatn</span>Fit
     </a>
-    <div class="collapse navbar-collapse">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link text-light" href="{% url 'index' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="{% url 'dashboard' %}">Dashboard</a>
-        </li>
+
+    <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{% url 'dashboard' %}">Dashboard</a></li>
+
+        {% if user.is_authenticated %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
+        {% endif %}
+
       </ul>
     </div>
   </div>
 </nav>
 
 <div class="container text-center mt-5 pt-5">
-  <a href="{% url 'index'%}" class="btn btn-outline-orange rounded-pill mb-4">
-    &larr; Back to Home
-  </a>
 
   <h1 class="fw-bold mb-4" style="font-size: 2.8rem;">
     Your <span class="text-orange">Fitness</span> Dashboard
   </h1>
 
-  <!-- ✅ Calorie Goal Setting Box -->
+  <!-- Daily goal form -->
   <form method="POST" action="{% url 'set_goal' %}" class="goal-form">
     {% csrf_token %}
     <div class="input-group">
@@ -71,54 +104,51 @@
   </form>
 
   <div class="row justify-content-center g-4 mt-4">
-    <!-- Calorie Tracker -->
+
+    <!-- Calorie card -->
     <div class="col-md-5">
-      <a href="{% url 'calorie'%}" style="text-decoration: none;">
+      <a href="{% url 'calorie' %}" style="text-decoration: none;">
         <div class="card-box">
-          <div class="mb-3">
-            <i class="bi bi-activity fs-1"></i>
-          </div>
-          <h4 class="fw-bold text-white">Calorie Tracker</h4>
-          <p class="text-light">Monitor your daily caloric intake and burn.</p>
+          <i class="bi bi-activity"></i>
+          <h4 class="fw-bold text-white mt-2">Calorie Tracker</h4>
+          <p class="card-text">Monitor food intake and track calories daily.</p>
         </div>
       </a>
     </div>
 
-    <!-- Body Planner -->
+    <!-- Body Planner card -->
     <div class="col-md-5">
       <a href="{% url 'bodyweight' %}" style="text-decoration: none;">
         <div class="card-box">
-          <div class="mb-3">
-            <i class="bi bi-bullseye fs-1"></i>
-          </div>
-          <h4 class="fw-bold text-white">Body Weight & Diet Planner</h4>
-          <p class="text-light">Track your body weight progress.</p>
+          <i class="bi bi-bullseye"></i>
+          <h4 class="fw-bold text-white mt-2">Body Weight & Health Tracker</h4>
+          <p class="card-text">Track weight, BMI & Health progress.</p>
         </div>
       </a>
     </div>
+
   </div>
 
   <!-- Summary -->
   <div class="summary-box mt-5 mx-auto" style="max-width: 900px;">
     <h5 class="text-white text-center mb-4">Daily Summary</h5>
-
+  
     <div class="row text-center">
       <div class="col-md-4 summary-item">
         <div class="value">{{ total_calories }}</div>
         <div class="label">Calories Consumed</div>
       </div>
-
       <div class="col-md-4 summary-item">
         <div class="value">{{ progress|floatformat:0 }}%</div>
         <div class="label">Goal Achievement</div>
       </div>
-
       <div class="col-md-4 summary-item">
         <div class="value">{{ daily_goal }}</div>
         <div class="label">Daily Goal</div>
       </div>
     </div>
   </div>
+  
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
