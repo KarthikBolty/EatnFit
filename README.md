@@ -1,6 +1,6 @@
 # EatnFit
 
-A Full Stack Fitness & Nutrition Tracking Web Application developed using **Python, Django, Django REST Framework, React.js, HTML, CSS, Bootstrap, and MySQL**.
+A Full Stack Fitness & Nutrition Tracking Web Application developed using **Python, Django, Django REST Framework, HTML, CSS, Bootstrap, and MySQL**.
 
 ## Features
 
@@ -17,7 +17,6 @@ A Full Stack Fitness & Nutrition Tracking Web Application developed using **Pyth
 ## Tech Stack
 
 ### Frontend
-- React.js
 - HTML5
 - CSS3
 - Bootstrap
